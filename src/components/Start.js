@@ -12,7 +12,6 @@ export default function Start (props){
                 <p>Test your knowladge with a large variety of Trivia questions!</p>
                 <Link to="/questions"> <button className="start-btn">Start quiz</button> </Link>
                 <img className="img-bottom" src={require("../images/bottomLeft.png")} alt="" />
-                <Outlet />
             </div>
         </div>
     )
