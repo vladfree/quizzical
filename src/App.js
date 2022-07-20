@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import Questions from "./components/Questions"
+import Start from "./components/Start"
+import {
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom"
 
-function App() {
+export default function App() {
+  const questionList = ["Q1?", "Q2?"]
+  const answersList = ["A1", "A2", "A3", "A4"]
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Routes>
+        <Route exact path="/" element={<Start />}/>
+        <Route exact path="/questions" element=
+          {
+            <Questions 
+                questios={questionList}
+                answers={answersList}
+            />
+          } 
+        />
+      </Routes>
   );
 }
 
-export default App;
