@@ -6,7 +6,8 @@ export default function RAnswer(props){
                 id={props.id}
                 name="answer"
                 value={props.id}
-                onClick={props.handleClick}
+                checked={props.isHeld}
+                onChange={props.handleClick}
             />
             <label htmlFor={props.id}>{props.value}</label>
         </div>
