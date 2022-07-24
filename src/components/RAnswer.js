@@ -1,4 +1,11 @@
 export default function RAnswer(props){
+    // console.log("answer: " + props.value + "; validate: " + props.validate)
+    const myStyle = {
+        color: props.validat && (
+            ((props.correct_ans === props.value) && "#94D7A2") ||
+            ((props.isHeld && (props.correct_ans !== props.value)) && "#F8BCBC")
+        )
+    } 
     return(
         <div>
             <input
@@ -9,7 +16,7 @@ export default function RAnswer(props){
                 checked={props.isHeld}
                 onChange={props.handleClick}
             />
-            <label htmlFor={props.id}>{props.value}</label>
+            <label htmlFor={props.id} style={myStyle}>{props.value}</label>
         </div>
     )
 }

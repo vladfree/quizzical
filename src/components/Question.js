@@ -3,41 +3,11 @@ import "../styles/index.css"
 import React from "react"
 import MCAnswer from "./MCAnswer"
 import RAnswer from "./RAnswer"
-import { nanoid } from "nanoid"
 
 function Question(props) {
-    // const [answers, setAnswers] = React.useState(generateAnswerObj())
-    // const [answers, setAnswers] = React.useState()
-
-    // function generateAnswerObj() {
-    //     const ans = props.ans
-    //     const ansObj = ans.map(ans => {
-    //         const id = nanoid()
-    //         return {
-    //             value: ans,
-    //             key: id,
-    //             id: id,
-    //             isHeld: false,
-    //             qId: props.qId,
-    //             type: props.type
-    //         }
-    //     })
-    //     return ansObj
-    // }
 
     function holdAnswer(qId, value) {
-        // console.log("qId: " + qId + " value: " + value)
         props.holdAnswer(qId, value)
-        // setAnswers(oldAnswers =>
-        //     oldAnswers.map(answer => {
-        //         if (answer.isHeld) return { ...answer, isHeld: false }
-        //         else if(answer.id === ansId){
-        //             props.holdAnswer(qId, answer.value)
-        //             return { ...answer, isHeld: true }
-        //         }  
-        //         else return answer
-        //     }
-        // ))
     }
 
     const answerElements = props.ans.map(answer =>
@@ -49,6 +19,8 @@ function Question(props) {
                     key={answer.id}
                     id={answer.id}
                     isHeld={answer.isHeld}
+                    validate={props.validate}
+                    correct_ans={props.correct_ans}
                 />
             ) :
             (
@@ -58,6 +30,8 @@ function Question(props) {
                     key={answer.id}
                     id={answer.id}
                     isHeld={answer.isHeld}
+                    validate={props.validate}
+                    correct_ans={props.correct_ans}
                 />
             )
     )
