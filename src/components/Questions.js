@@ -8,12 +8,12 @@ import { nanoid } from "nanoid"
 
 export default function Questions(){
     const [allQuestions, setAllQuestions] = React.useState([])
-    const [checkFlag, setCheckFlag] = React.useState(false)
-    const [questionElements, setQuestionElements] = React.useState([])
+    const [questionElements, setQuestionElements] = React.useState(() => {})
     const [correctAns, setCorrectAns] = React.useState(0)
+    const [checkFlag, setCheckFlag] = React.useState(false)
     const [playAgain, setPlayAgain] = React.useState(false)
+    const [reload, setReload] = React.useState(false)
     let [loading, setLoading] = React.useState(false);
-    console.log("1 " + playAgain)
 
     const override = {
         display: "block",
@@ -22,7 +22,6 @@ export default function Questions(){
     };
 
     React.useEffect(() => {
-        console.log("2. UseEffect")
         setLoading(true)
         async function fetchData() {
             const res = await fetch("https://opentdb.com/api.php?amount=5")
@@ -64,12 +63,11 @@ export default function Questions(){
         }
         fetchData();
         return () => {
-            console.log('This will be logged on unmount');
+            // console.log('This will be logged on unmount');
         };
     }, [playAgain])
 
     React.useEffect(() => {
-        console.log("3. UseEffect")
         setQuestionElements(allQuestions.map(question => (
             <Question
                 q={question.q}
@@ -84,9 +82,9 @@ export default function Questions(){
             />
         )))
         return () => {
-            console.log('This will be logged on unmount');
+            // console.log('This will be logged on unmount');
         };
-    }, [allQuestions, checkFlag])
+    }, [allQuestions, reload])
 
     function holdAnswer(qId, aId) {
         setAllQuestions(oldQuestion => {
@@ -117,14 +115,15 @@ export default function Questions(){
             )
             setCorrectAns(correct_ans)
             setCheckFlag(true)
+            setReload(prev => !prev)
         } else {
             setCheckFlag(false)
+            setReload(prev => !prev)
             console.log("Please answer all the questions!")
         }
     }
 
     function playNewGame(){
-        console.log("Play new game")
         setPlayAgain(old => !old)
     }
     return(
