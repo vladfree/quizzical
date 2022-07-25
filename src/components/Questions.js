@@ -1,7 +1,6 @@
 
 import "../styles/index.css"
 import React from "react"
-import {Link} from "react-router-dom"
 import Question from "./Question"
 
 import ClipLoader from "react-spinners/ClipLoader";
@@ -10,9 +9,11 @@ import { nanoid } from "nanoid"
 export default function Questions(){
     const [allQuestions, setAllQuestions] = React.useState([])
     const [checkFlag, setCheckFlag] = React.useState(false)
-    const [questionElements, setQuestionElements] = React.useState(() => {})
+    const [questionElements, setQuestionElements] = React.useState([])
     const [correctAns, setCorrectAns] = React.useState(0)
+    const [playAgain, setPlayAgain] = React.useState(false)
     let [loading, setLoading] = React.useState(false);
+    console.log("1 " + playAgain)
 
     const override = {
         display: "block",
@@ -21,6 +22,7 @@ export default function Questions(){
     };
 
     React.useEffect(() => {
+        console.log("2. UseEffect")
         setLoading(true)
         async function fetchData() {
             const res = await fetch("https://opentdb.com/api.php?amount=5")
@@ -57,13 +59,34 @@ export default function Questions(){
                 }
             })
             setAllQuestions(modData)
+            setCheckFlag(false)
             setLoading(false)
         }
         fetchData();
         return () => {
             console.log('This will be logged on unmount');
         };
-    }, [])
+    }, [playAgain])
+
+    React.useEffect(() => {
+        console.log("3. UseEffect")
+        setQuestionElements(allQuestions.map(question => (
+            <Question
+                q={question.q}
+                ans={question.answers}
+                correct_ans={question.correct_ans}
+                type={question.type}
+                key={question.qId}
+                id={question.qId}
+                holdAnswer={holdAnswer}
+                answered={question.answered}
+                validate={checkFlag}
+            />
+        )))
+        return () => {
+            console.log('This will be logged on unmount');
+        };
+    }, [allQuestions, checkFlag])
 
     function holdAnswer(qId, aId) {
         setAllQuestions(oldQuestion => {
@@ -82,22 +105,6 @@ export default function Questions(){
         })
     }
 
-    React.useEffect(() => {
-        setQuestionElements(allQuestions.map(question => (
-            <Question
-                q={question.q}
-                ans={question.answers}
-                correct_ans={question.correct_ans}
-                type={question.type}
-                key={question.qId}
-                id={question.qId}
-                holdAnswer={holdAnswer}
-                answered={question.answered}
-                validate={checkFlag}
-            />
-        )))
-    }, [checkFlag, allQuestions])
-
     function checkAnswers(){
         const allHeld = allQuestions.filter(element => element.answered)
         if(allHeld.length === allQuestions.length){
@@ -115,7 +122,11 @@ export default function Questions(){
             console.log("Please answer all the questions!")
         }
     }
-    
+
+    function playNewGame(){
+        console.log("Play new game")
+        setPlayAgain(old => !old)
+    }
     return(
         <div className="questions">
             <img className="img-top" src={require("../images/imgTop.png")} alt="" />
@@ -125,7 +136,7 @@ export default function Questions(){
                 {checkFlag ? 
                     (<div className="play-again">
                         <p>You scored {correctAns}/{allQuestions.length} correct answers</p>
-                        <Link to="/"><button className="answer-btn">Play again</button></Link>
+                        <button className="answer-btn" onClick={playNewGame}>Play again</button>
                     </div>) :
                     (<button className="answer-btn" onClick={checkAnswers}>Check answers</button>) 
                 }               
