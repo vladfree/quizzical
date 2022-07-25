@@ -1,6 +1,7 @@
 
 import "../styles/index.css"
 import React from "react"
+import {Link} from "react-router-dom"
 import Question from "./Question"
 
 import ClipLoader from "react-spinners/ClipLoader";
@@ -10,6 +11,7 @@ export default function Questions(){
     const [allQuestions, setAllQuestions] = React.useState([])
     const [checkFlag, setCheckFlag] = React.useState(false)
     const [questionElements, setQuestionElements] = React.useState(() => {})
+    const [correctAns, setCorrectAns] = React.useState(0)
     let [loading, setLoading] = React.useState(false);
 
     const override = {
@@ -40,10 +42,19 @@ export default function Questions(){
                         id: id,
                         isHeld: false,
                         qId: qId,
-                        type: question.type
+                        type: question.type,
+                        isCorrect: (question.correct_answer === ans)
                     }
                 })
-                return { q: question.question, qId: qId, answers: ansObj, correct_ans: question.correct_answer, type: question.type, key: qId, answered: false }
+                return { 
+                    q: question.question, 
+                    qId: qId, 
+                    answers: ansObj, 
+                    correct_ans: question.correct_answer, 
+                    type: question.type, 
+                    key: qId, 
+                    answered: false 
+                }
             })
             setAllQuestions(modData)
             setLoading(false)
@@ -53,8 +64,6 @@ export default function Questions(){
             console.log('This will be logged on unmount');
         };
     }, [])
-
-
 
     function holdAnswer(qId, aId) {
         setAllQuestions(oldQuestion => {
@@ -74,8 +83,6 @@ export default function Questions(){
     }
 
     React.useEffect(() => {
-        console.log("RELOADING")
-        console.log("checkFlag: " + checkFlag)
         setQuestionElements(allQuestions.map(question => (
             <Question
                 q={question.q}
@@ -93,10 +100,16 @@ export default function Questions(){
 
     function checkAnswers(){
         const allHeld = allQuestions.filter(element => element.answered)
-        console.log("allHeld: " + allHeld.length)
         if(allHeld.length === allQuestions.length){
+            let correct_ans = 0 
+            allQuestions.forEach(element => 
+                element.answers.forEach(answer => {
+                    (answer.isHeld && answer.isCorrect) && 
+                    (correct_ans += 1)
+                })
+            )
+            setCorrectAns(correct_ans)
             setCheckFlag(true)
-            console.log("Flag set to true")
         } else {
             setCheckFlag(false)
             console.log("Please answer all the questions!")
@@ -109,7 +122,13 @@ export default function Questions(){
             {questionElements}
             <ClipLoader color={"#ffffff"} loading={loading} cssOverride={override} size={150} />
             <div className="btn-container">
-                <button className="answer-btn" onClick={checkAnswers}>Check answers</button>
+                {checkFlag ? 
+                    (<div className="play-again">
+                        <p>You scored {correctAns}/{allQuestions.length} correct answers</p>
+                        <Link to="/"><button className="answer-btn">Play again</button></Link>
+                    </div>) :
+                    (<button className="answer-btn" onClick={checkAnswers}>Check answers</button>) 
+                }               
             </div>
             <img className="img-bottom" src={require("../images/imgBottom.png")} alt="" />
         </div>

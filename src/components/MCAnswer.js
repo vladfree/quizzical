@@ -1,8 +1,6 @@
 
 export default function Answers(props){
 
-    // console.log("answer: " + props.value + "; validate: " + props.validate)
-    // console.log("correct ans: " + props.correct_ans + " value: " + props.value)
     const myStyle = 
         props.validate ? 
         {
@@ -13,7 +11,6 @@ export default function Answers(props){
         {
              backgroundColor: props.isHeld && "#D6DBF5" 
         } 
-
     
     return(
         <div className="answer" onClick={props.handleClick} style={myStyle}>{props.value}</div>
